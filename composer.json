@@ -12,6 +12,7 @@
 	"php": ">=7.0.0",
 	"drupal/core": "~8.5",
     "php-http/guzzle6-adapter": "^1.1",
-    "knplabs/github-api": "^2.10"
+    "knplabs/github-api": "^2.10",
+    "gentle/bitbucket-api": "^1.1"
   }
 }
