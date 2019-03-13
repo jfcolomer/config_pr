@@ -70,7 +70,7 @@ class ConfigPrSettingsForm extends ConfigFormBase {
     ];
     $form['repo']['repo_controller'] = [
       '#type' => 'select',
-      '#title' => $this->t('Repo provier'),
+      '#title' => $this->t('Repo provider'),
       '#description' => $this->t('Select controller.'),
       '#options' => $this->repoController->getControllers(),
       '#default_value' => $this->config('config_pr.settings')->get('repo.controller') ?? 'config_pr.repo_controller.github',
