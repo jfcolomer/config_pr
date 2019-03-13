@@ -153,7 +153,12 @@ class ConfigPrForm extends FormBase {
       $response->send();
     }
     else {
-      $this->repoController->setAuthToken($authToken);
+        if ($this->repoController->getName() == 'Bitbucket') {
+            $this->repoController->setAppPassword($appPassword);
+        }
+        else {
+            $this->repoController->setAuthToken($authToken);
+        }
     }
 
     try {
