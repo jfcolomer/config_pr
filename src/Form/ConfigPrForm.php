@@ -20,7 +20,8 @@ use Drupal\config_pr\RepoControllerInterface;
 /**
  * Construct the storage changes in a configuration synchronization form.
  */
-class ConfigPrForm extends FormBase {
+class ConfigPrForm extends FormBase
+{
 
   /**
    * @var \Drupal\config_pr\RepoControllerInterface
@@ -69,12 +70,14 @@ class ConfigPrForm extends FormBase {
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
    */
-  public function __construct(StorageInterface $sync_storage,
-                              StorageInterface $active_storage,
-                              ConfigManagerInterface $config_manager,
-                              ConfigFactoryInterface $config_factory,
-                              RepoControllerInterface $repoController,
-                              AccountInterface $current_user) {
+  public function __construct(
+    StorageInterface $sync_storage,
+    StorageInterface $active_storage,
+    ConfigManagerInterface $config_manager,
+    ConfigFactoryInterface $config_factory,
+    RepoControllerInterface $repoController,
+    AccountInterface $current_user
+  ) {
     $this->syncStorage = $sync_storage;
     $this->activeStorage = $active_storage;
     $this->configManager = $config_manager;
@@ -85,10 +88,11 @@ class ConfigPrForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container)
+  {
     $repoController = $container->get('config.factory')
-      ->get('config_pr.settings')
-      ->get('repo.controller')
+        ->get('config_pr.settings')
+        ->get('repo.controller')
       ?? 'config_pr.repo_controller.github';
 
     return new static(
@@ -104,7 +108,8 @@ class ConfigPrForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId()
+  {
     return 'config_pr_form';
   }
 
@@ -113,7 +118,8 @@ class ConfigPrForm extends FormBase {
    *
    * @return array
    */
-  private function getDiffTableHeader() {
+  private function getDiffTableHeader()
+  {
     return [
       $this->t('Name'),
       $this->t('Operations'),
@@ -126,21 +132,22 @@ class ConfigPrForm extends FormBase {
    *
    * @return array
    */
-  private function getOpenPrTableHeader() {
+  private function getOpenPrTableHeader()
+  {
     return [$this->t('Id'), $this->t('Title'), $this->t('Link')];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state)
+  {
     $repo_user = $this->config('config_pr.settings')->get('repo.repo_user');
     $repo_name = $this->config('config_pr.settings')->get('repo.repo_name');
     if (empty($repo_user) || empty($repo_name)) {
       \Drupal::messenger()->addError($this->t('Repo configuration missing!'));
       return;
-    }
-    else {
+    } else {
       $this->repoController->setRepoUser($repo_user);
       $this->repoController->setRepoName($repo_name);
     }
@@ -151,14 +158,13 @@ class ConfigPrForm extends FormBase {
       \Drupal::messenger()->addError($this->t('Config Pull Request Auth Token missing!'));
       $response = new RedirectResponse('/user/' . $uid . '/edit');
       $response->send();
-    }
-    else {
-        if ($this->repoController->getName() == 'Bitbucket') {
-            $this->repoController->setAppPassword($appPassword);
-        }
-        else {
-            $this->repoController->setAuthToken($authToken);
-        }
+    } else {
+      // @todo: define $appPassword.
+      if ($this->repoController->getName() == 'Bitbucket') {
+        $this->repoController->setAppPassword($appPassword);
+      } else {
+        $this->repoController->setAuthToken($authToken);
+      }
     }
 
     try {
@@ -181,14 +187,14 @@ class ConfigPrForm extends FormBase {
         '#rows' => [],
         '#empty' => $this->t('There are no configuration changes.'),
       ];
-      $form['actions']['#access'] = FALSE;
+      $form['actions']['#access'] = false;
 
       return $form;
     }
 
     $config_diffs = [];
     foreach ($storage_comparer->getAllCollectionNames() as $collection) {
-      foreach ($storage_comparer->getChangelist(NULL, $collection) as $config_change_type => $config_names) {
+      foreach ($storage_comparer->getChangelist(null, $collection) as $config_change_type => $config_names) {
 
         if (empty($config_names)) {
           continue;
@@ -197,8 +203,7 @@ class ConfigPrForm extends FormBase {
         // Invert delete and create. This is the opposite action when committing to the repo.
         if ($config_change_type == 'create') {
           $config_change_type = 'delete';
-        }
-        elseif ($config_change_type == 'delete') {
+        } elseif ($config_change_type == 'delete') {
           $config_change_type = 'create';
         }
 
@@ -209,19 +214,23 @@ class ConfigPrForm extends FormBase {
 
         switch ($config_change_type) {
           case 'delete':
-            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names), '@count removed', '@count removed');
+            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names),
+              '@count removed', '@count removed');
             break;
 
           case 'update':
-            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names), '@count changed', '@count changed');
+            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names),
+              '@count changed', '@count changed');
             break;
 
           case 'create':
-            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names), '@count new', '@count new');
+            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names),
+              '@count new', '@count new');
             break;
 
           case 'rename':
-            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names), '@count renamed', '@count renamed');
+            $form[$collection][$config_change_type]['heading']['#value'] = $this->formatPlural(count($config_names),
+              '@count renamed', '@count renamed');
             break;
         }
 
@@ -241,16 +250,14 @@ class ConfigPrForm extends FormBase {
               '@source_name' => $names['old_name'],
               '@target_name' => $names['new_name']
             ]);
-          }
-          else {
+          } else {
             $route_options = ['source_name' => $config_name];
           }
 
           if ($collection != StorageInterface::DEFAULT_COLLECTION) {
             $route_name = 'config.diff_collection';
             $route_options['collection'] = $collection;
-          }
-          else {
+          } else {
             $route_name = 'config.diff';
           }
           $links['view_diff'] = [
@@ -291,7 +298,7 @@ class ConfigPrForm extends FormBase {
             ],
             '#states' => [
               'checked' => [
-                ':input[name*="select-' . $configId . '"]' => ['checked' => TRUE],
+                ':input[name*="select-' . $configId . '"]' => ['checked' => true],
               ],
             ],
           ];
@@ -309,14 +316,14 @@ class ConfigPrForm extends FormBase {
     $form['new_pr']['pr_title'] = [
       '#type' => 'textfield',
       '#title' => t('Title'),
-      '#required' => TRUE,
+      '#required' => true,
       '#description' => $this->t('Pull request title.'),
     ];
     // @todo display the machine name built form title with Edit link.
     $form['new_pr']['branch_name'] = [
       '#title' => $this->t('Branch name'),
       '#type' => 'textfield',
-      '#required' => TRUE,
+      '#required' => true,
       '#default_value' => date('Ymd', time()) . '-config',
       '#description' => $this->t('Branch name.'),
     ];
@@ -355,7 +362,8 @@ class ConfigPrForm extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   Object describing the current state of the form.
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state)
+  {
     // Check if branch exists.
     $branchName = $form_state->getValue('branch_name');
     if ($this->repoController->branchExists($branchName)) {
@@ -367,7 +375,8 @@ class ConfigPrForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state)
+  {
     // Create a branch.
     $branchName = $form_state->getValue('branch_name');
     $this->repoController->createBranch($branchName);
@@ -399,7 +408,8 @@ class ConfigPrForm extends FormBase {
    * @param $branchName
    * @param $form_state
    */
-  private function commitConfig($branchName, $form_state) {
+  private function commitConfig($branchName, $form_state)
+  {
     $user = $this->currentUser();
     $committer = array(
       'name' => $user->getAccountName(),
@@ -424,8 +434,7 @@ class ConfigPrForm extends FormBase {
         if (!empty($this->config('config_pr.settings')->get('commit_messages.' . $action))) {
           $commitMessage = $this->t($this->config('config_pr.settings')
             ->get('commit_messages.' . $action), ['@action' => $action, '@config_name' => $config_name])->render();
-        }
-        else {
+        } else {
           $commitMessage = $this->t('Config @action config @config_name.yml', [
             '@action' => $action,
             '@config_name' => $config_name
@@ -486,7 +495,7 @@ class ConfigPrForm extends FormBase {
       }
     }
 
-    return TRUE;
+    return true;
   }
 
   /**
@@ -495,7 +504,8 @@ class ConfigPrForm extends FormBase {
    * @param $branchName
    * @param $form_state
    */
-  private function createPr($branchName, $form_state) {
+  private function createPr($branchName, $form_state)
+  {
     // Create pull request.
     $result = $this->repoController->createPr(
       $this->repoController->getDefaultBranch(),
@@ -514,7 +524,8 @@ class ConfigPrForm extends FormBase {
    *
    * @return mixed
    */
-  private function getMachineName($string) {
+  private function getMachineName($string)
+  {
     $string = preg_replace('/[^a-z0-9_]+/', '_', $string);
 
     return preg_replace('/_+/', '_', $string);
