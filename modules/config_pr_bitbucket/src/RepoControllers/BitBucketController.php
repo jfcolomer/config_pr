@@ -154,15 +154,11 @@ class BitBucketController implements RepoControllerInterface
    *
    * @param $branch
    */
+  // @todo: send $team value.
   private function findBranch($branchName)
   {
-    $references = new References($this->getClient());
-    $branches = $this->listBranches($references);
-    foreach ($branches as $item) {
-      if ($item['ref'] == 'refs/heads/' . $branchName) {
-        return $item;
-      }
-    }
+    $references = new API\Repositories\Refs\Branches();
+    $references->get($team, $this->repo_name, $branchName);
   }
 
   /**
@@ -170,20 +166,6 @@ class BitBucketController implements RepoControllerInterface
    */
   public function getSha($branch)
   {
-  }
-
-  /**
-   * List branches.
-   *
-   * @param References $references
-   *
-   * @return array
-   */
-  private function listBranches(\Github\Api\GitData\References $references)
-  {
-    $branches = $references->branches($this->repo_user, $this->repo_name);
-
-    return $branches;
   }
 
   /**
