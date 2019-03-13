@@ -66,14 +66,6 @@ interface RepoControllerInterface {
   public function getCommitter();
 
   /**
-   * Setter for token auth.
-   *
-   * @param $authToken
-   *   The Authentication token
-   */
-  public function setAuthToken($authToken);
-
-  /**
    * Returns a list of open pull requests.
    */
   public function getOpenPrs();
@@ -94,7 +86,7 @@ interface RepoControllerInterface {
   public function getSha($branch);
 
   /**
-   * Creates the authentication using the token.
+   * Creates the authentication using the token/password.
    */
   public function authenticate();
 

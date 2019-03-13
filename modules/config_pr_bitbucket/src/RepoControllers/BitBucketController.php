@@ -82,41 +82,13 @@ class BitBucketController implements RepoControllerInterface
     return $this->id;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getOpenPrs()
   {
-    $result = [];
-    $client = $this->getClient();
-
-    // @todo filter by open only
-    $openPullRequests = $client
-      ->repositories()
-      ->users($this->getRepoUser())
-      ->pullRequests($this->getRepoName());
-    $openPullRequests = $openPullRequests->list([]);
-    print_r($openPullRequests);
-    exit;
-    exit;
-    foreach ($openPullRequests as $item) {
-      $link = Link::fromTextAndUrl(@
-      'Open',
-        Url::fromUri(
-          $item['web_url'],
-          array(
-            'attributes' => array(
-              'target' => '_blank'
-            )
-          )
-        )
-      );
-
-      $result[] = [
-        'number' => '#' . $item['iid'],
-        'title' => $item['title'],
-        'link' => $link,
-      ];
-    }
-
-    return $result;
+    $openPullRequests = new Repositories\PullRequests();
+    return $openPullRequests->all($this->repo_user, $this->repo_name);
   }
 
   /**
@@ -164,7 +136,7 @@ class BitBucketController implements RepoControllerInterface
    */
   public function getAppPassword()
   {
-    return $this->$appPassword;
+    return $this->appPassword;
   }
 
   /**
@@ -256,14 +228,6 @@ class BitBucketController implements RepoControllerInterface
 
       return $branch;
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setAuthToken($authToken)
-  {
-    $this->authToken = $authToken;
   }
 
   /**
