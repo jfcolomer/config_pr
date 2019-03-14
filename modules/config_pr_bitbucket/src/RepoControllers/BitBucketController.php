@@ -13,20 +13,19 @@ use Bitbucket\API;
  *
  * @see \Drupal\config_pr\RepoControllerInterface
  */
-class BitBucketController implements RepoControllerInterface
-{
+class BitBucketController implements RepoControllerInterface {
 
   /**
    * Holds the controller name.
    *
-   * @var string $name .
+   * @var string $name.
    */
   protected $name = 'BitBucket';
 
   /**
    * Holds the controller Id.
    *
-   * @var string $id .
+   * @var string $id.
    */
   protected $id = 'config_pr_bitbucket.repo_controller.bitbucket';
 
@@ -69,24 +68,21 @@ class BitBucketController implements RepoControllerInterface
   /**
    * {@inheritdoc}
    */
-  public function getName()
-  {
+  public function getName() {
     return $this->name;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getId()
-  {
+  public function getId() {
     return $this->id;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getOpenPrs()
-  {
+  public function getOpenPrs() {
     $openPullRequests = new Repositories\PullRequests();
     return $openPullRequests->all($this->repo_user, $this->repo_name);
   }
@@ -94,58 +90,51 @@ class BitBucketController implements RepoControllerInterface
   /**
    * {@inheritdoc}
    */
-  public function setCommitter($committer)
-  {
+  public function setCommitter($committer) {
     $this->committer = $committer;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getRepoUser()
-  {
+  public function getRepoUser() {
     return $this->repo_user;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getRepoName()
-  {
+  public function getRepoName() {
     return $this->repo_name;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getCommitter()
-  {
+  public function getCommitter() {
     return $this->committer;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setAppPassword($appPassword)
-  {
+  public function setAppPassword($appPassword) {
     $this->appPassword = $appPassword;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getAppPassword()
-  {
+  public function getAppPassword() {
     return $this->appPassword;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function branchExists($branchName)
-  {
+  public function branchExists($branchName) {
     if ($this->findBranch($branchName)) {
-      return true;
+      return TRUE;
     }
   }
 
@@ -155,8 +144,7 @@ class BitBucketController implements RepoControllerInterface
    * @param $branch
    */
   // @todo: send $team value.
-  private function findBranch($branchName)
-  {
+  private function findBranch($branchName) {
     $references = new API\Repositories\Refs\Branches();
     $references->get($team, $this->repo_name, $branchName);
   }
@@ -164,23 +152,20 @@ class BitBucketController implements RepoControllerInterface
   /**
    * {@inheritdoc}
    */
-  public function getSha($branch)
-  {
+  public function getSha($branch) {
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setRepoUser($repo_user)
-  {
+  public function setRepoUser($repo_user) {
     $this->repo_user = $repo_user;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setRepoName($repo_name)
-  {
+  public function setRepoName($repo_name) {
     $this->repo_name = $repo_name;
   }
 
@@ -191,8 +176,7 @@ class BitBucketController implements RepoControllerInterface
    *
    * @return array
    */
-  public function createBranch($branchName)
-  {
+  public function createBranch($branchName) {
     $references = new References($this->getClient());
     $defaultBranch = $this->getDefaultBranch();
 
@@ -203,10 +187,11 @@ class BitBucketController implements RepoControllerInterface
       ];
 
       if ($this->branchExists($branchName)) {
-        return false;
+        return FALSE;
       }
 
-      $branch = $references->create($this->repo_user, $this->repo_name, $params);
+      $branch = $references->create($this->repo_user, $this->repo_name,
+        $params);
 
       return $branch;
     }
@@ -215,17 +200,16 @@ class BitBucketController implements RepoControllerInterface
   /**
    * {@inheritdoc}
    */
-  public function authenticate()
-  {
+  public function authenticate() {
     $user = new API\User();
-    $user->setCredentials(new Authentication\Basic($this->getRepoUser(), $this->getAppPassword()));
+    $user->setCredentials(new Authentication\Basic($this->getRepoUser(),
+      $this->getAppPassword()));
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getDefaultBranch()
-  {
+  public function getDefaultBranch() {
     $defaultBranch = new Repositories\Repository();
     $defaultBranch->branch($this->getRepoUser(), $this->getRepoName());
     return $defaultBranch;
@@ -234,8 +218,7 @@ class BitBucketController implements RepoControllerInterface
   /**
    * {@inheritdoc}
    */
-  public function createPr($base, $branch, $title, $body)
-  {
+  public function createPr($base, $branch, $title, $body) {
     // TODO add catch.
     $params = array(
       'title' => 'Test PR',
@@ -265,8 +248,7 @@ class BitBucketController implements RepoControllerInterface
    * @param $path
    *    The absolute path and file repo_name.
    */
-  private function getFileSha($path)
-  {
+  private function getFileSha($path) {
 
   }
 
@@ -274,29 +256,25 @@ class BitBucketController implements RepoControllerInterface
   /**
    * {@inheritdoc}
    */
-  public function createFile($path, $content, $commitMessage, $branchName)
-  {
+  public function createFile($path, $content, $commitMessage, $branchName) {
   }
 
   /**
    * {@inheritdoc}
    */
-  public function updateFile($path, $content, $commitMessage, $branchName)
-  {
+  public function updateFile($path, $content, $commitMessage, $branchName) {
   }
 
   /**
    * {@inheritdoc}
    */
-  public function deleteFile($path, $commitMessage, $branchName)
-  {
+  public function deleteFile($path, $commitMessage, $branchName) {
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getClient()
-  {
+  public function getClient() {
     if (!is_null($this->client)) {
       return $this->client;
     }
