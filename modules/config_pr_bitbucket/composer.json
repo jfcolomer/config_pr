@@ -5,7 +5,6 @@
   "license": "GPL-2.0+",
   "require": {
 	"php": ">=7.1",
-	"config_pr/config_pr": "^1.0",
-    "bitbucket/client": "^1.1"
+    "gentle/bitbucket-api": "^1.1"
   }
 }
