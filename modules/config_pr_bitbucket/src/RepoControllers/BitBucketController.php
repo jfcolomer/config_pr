@@ -4,7 +4,7 @@ namespace Drupal\config_pr_bitbucket\RepoControllers;
 
 use Drupal\config_pr\RepoControllerInterface;
 use Bitbucket\API;
-use Bitbucket\API\Authentication;
+use Bitbucket\API\User;
 use Bitbucket\API\Http\Client;
 use Bitbucket\API\Repositories;
 
@@ -201,9 +201,13 @@ class BitBucketController implements RepoControllerInterface {
    * {@inheritdoc}
    */
   public function authenticate() {
-    $user = new API\User();
-    $user->setCredentials(new Authentication\Basic($this->getRepoUser(),
-      $this->getAppPassword()));
+    $user = new User();
+    $user->getClient()->addListener(
+      new API\Http\Listener\BasicAuthListener($this->getRepoUser(), $this->getRepoName())
+    );
+
+    // now you can access protected endpoints as $bb_user
+    $response = $user->get();
   }
 
   /**
