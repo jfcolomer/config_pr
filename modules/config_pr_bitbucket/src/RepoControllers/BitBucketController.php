@@ -3,10 +3,10 @@
 namespace Drupal\config_pr_bitbucket\RepoControllers;
 
 use Drupal\config_pr\RepoControllerInterface;
+use Bitbucket\API;
 use Bitbucket\API\Authentication;
 use Bitbucket\API\Http\Client;
 use Bitbucket\API\Repositories;
-use Bitbucket\API;
 
 /**
  * Class to define the BitBucket controller.
@@ -252,7 +252,6 @@ class BitBucketController implements RepoControllerInterface {
 
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -265,7 +264,7 @@ class BitBucketController implements RepoControllerInterface {
   public function updateFile($path, $content, $commitMessage, $branchName) {
   }
 
-  /**
+    /**
    * {@inheritdoc}
    */
   public function deleteFile($path, $commitMessage, $branchName) {
