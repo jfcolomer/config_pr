@@ -148,6 +148,7 @@ class ConfigPrForm extends FormBase {
     }
     $user = User::load($this->currentUser()->id());
     $authToken = $user->field_config_pr_auth_token->value;
+    $appPassword = 'password';
     if (empty($authToken)) {
       $uid = \Drupal::currentUser()->id();
       \Drupal::messenger()->addError($this->t('Config Pull Request Auth Token missing!'));
@@ -156,7 +157,7 @@ class ConfigPrForm extends FormBase {
     }
     else {
       // @todo: define $appPassword.
-      if ($this->repoController->getName() == 'Bitbucket') {
+      if ($this->repoController->getName() == 'BitBucket') {
         $this->repoController->setAppPassword($appPassword);
       }
       else {

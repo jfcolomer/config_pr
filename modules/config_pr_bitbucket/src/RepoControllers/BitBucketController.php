@@ -78,8 +78,10 @@ class BitBucketController implements RepoControllerInterface {
    * {@inheritdoc}
    */
   public function getOpenPrs() {
-    $openPullRequests = new Repositories\PullRequests();
-    return $openPullRequests->all($this->repo_user, $this->repo_name);
+    $this->authenticate();
+    $pull = new \Bitbucket\API\Repositories\PullRequests();
+    $pull->all($this->repo_user, 'repo_name');
+    var_dump($pull->all($this->repo_user, 'repo_name'));die;
   }
 
   /**
@@ -109,6 +111,11 @@ class BitBucketController implements RepoControllerInterface {
   public function getCommitter() {
     return $this->committer;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setAuthToken($authToken) {}
 
   /**
    * {@inheritdoc}

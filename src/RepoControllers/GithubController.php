@@ -118,6 +118,11 @@ class GithubController implements RepoControllerInterface {
   /**
    * {@inheritdoc}
    */
+  public function setAppPassword($appPassword) {}
+
+  /**
+   * {@inheritdoc}
+   */
   public function setAuthToken($authToken) {
     $this->authToken = $authToken;
   }

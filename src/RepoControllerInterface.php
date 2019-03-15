@@ -66,6 +66,22 @@ interface RepoControllerInterface {
   public function getCommitter();
 
   /**
+   * Setter for token auth.
+   *
+   * @param $authToken
+   *   The Authentication token
+   */
+  public function setAuthToken($authToken);
+
+  /**
+   * Setter for Bitbucket password.
+   *
+   * @param $appPassword
+   *   The Bitbucket password.
+   */
+  public function setAppPassword($appPassword);
+
+  /**
    * Returns a list of open pull requests.
    */
   public function getOpenPrs();
