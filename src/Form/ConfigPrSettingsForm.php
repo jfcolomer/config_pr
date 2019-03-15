@@ -23,10 +23,7 @@ class ConfigPrSettingsForm extends ConfigFormBase {
    * @param \Drupal\config_pr\RepoControllerManagerInterface $repo_controller
    *   The repo controller.
    */
-  public function __construct(
-    ConfigFactoryInterface $config_factory,
-    RepoControllerManagerInterface $repo_controller
-  ) {
+  public function __construct(ConfigFactoryInterface $config_factory, RepoControllerManagerInterface $repo_controller) {
     parent::__construct($config_factory);
 
     $this->repoController = $repo_controller;
@@ -157,14 +154,10 @@ class ConfigPrSettingsForm extends ConfigFormBase {
     $config->set('repo.controller', $form_state->getValue('repo_controller'));
     $config->set('repo.repo_user', $form_state->getValue('repo_user'));
     $config->set('repo.repo_name', $form_state->getValue('repo_name'));
-    $config->set('commit_messages.update',
-      $form_state->getValue('message_update'));
-    $config->set('commit_messages.create',
-      $form_state->getValue('message_create'));
-    $config->set('commit_messages.delete',
-      $form_state->getValue('message_delete'));
-    $config->set('commit_messages.rename',
-      $form_state->getValue('message_rename'));
+    $config->set('commit_messages.update', $form_state->getValue('message_update'));
+    $config->set('commit_messages.create', $form_state->getValue('message_create'));
+    $config->set('commit_messages.delete', $form_state->getValue('message_delete'));
+    $config->set('commit_messages.rename', $form_state->getValue('message_rename'));
     $config->save();
 
     parent::submitForm($form, $form_state);

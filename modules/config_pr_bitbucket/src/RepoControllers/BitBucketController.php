@@ -34,31 +34,26 @@ class BitBucketController implements RepoControllerInterface {
    *   The repo user
    */
   private $repo_user;
-
   /**
    * @var $defaultBranch
    *   The repository default branch.
    */
   private $defaultBranch;
-
   /**
    * @var $name
    *   The repo repo_name
    */
   private $repo_name;
-
   /**
    * @var $appPassword
    *   The App password
    */
   private $appPassword = '';
-
   /**
    * @var $client
    *    The client instance
    */
   private $client;
-
   /**
    * @var $committer
    *   The committer username and email
@@ -146,14 +141,13 @@ class BitBucketController implements RepoControllerInterface {
   // @todo: send $team value.
   private function findBranch($branchName) {
     $references = new API\Repositories\Refs\Branches();
-    $references->get($team, $this->repo_name, $branchName);
+    $references->get($this->getRepoUser(), $this->repo_name, $branchName);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getSha($branch) {
-  }
+  public function getSha($branch) {}
 
   /**
    * {@inheritdoc}
@@ -170,29 +164,26 @@ class BitBucketController implements RepoControllerInterface {
   }
 
   /**
-   * Creates a new branch from the default branch.
-   *
-   * @param $branchName
-   *
-   * @return array
+   * {@inheritdoc}
+   */
+  public function updateFile($path, $content, $commitMessage, $branchName) {}
+
+  /**
+   * {@inheritdoc}
    */
   public function createBranch($branchName) {
     $references = new References($this->getClient());
     $defaultBranch = $this->getDefaultBranch();
-
     if ($sha = $this->getSha($defaultBranch)) {
       $params = [
         'ref' => 'refs/heads/' . $branchName,
         'sha' => $sha,
       ];
-
       if ($this->branchExists($branchName)) {
         return FALSE;
       }
-
       $branch = $references->create($this->repo_user, $this->repo_name,
         $params);
-
       return $branch;
     }
   }
@@ -208,6 +199,7 @@ class BitBucketController implements RepoControllerInterface {
 
     // now you can access protected endpoints as $bb_user
     $response = $user->get();
+    var_dump($response);die;
   }
 
   /**
@@ -243,36 +235,17 @@ class BitBucketController implements RepoControllerInterface {
     );
     $pullRequest = new Repositories\PullRequests();
     $pullRequest->create($this->getRepoUser(), $this->getRepoName(), $params);
-
-  }
-
-  /**
-   * Get the SHA of the file
-   *
-   * @param $path
-   *    The absolute path and file repo_name.
-   */
-  private function getFileSha($path) {
-
   }
 
   /**
    * {@inheritdoc}
    */
-  public function createFile($path, $content, $commitMessage, $branchName) {
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function updateFile($path, $content, $commitMessage, $branchName) {
-  }
+  public function createFile($path, $content, $commitMessage, $branchName) {}
 
     /**
    * {@inheritdoc}
    */
-  public function deleteFile($path, $commitMessage, $branchName) {
-  }
+  public function deleteFile($path, $commitMessage, $branchName) {}
 
   /**
    * {@inheritdoc}
